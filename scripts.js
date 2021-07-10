@@ -1,109 +1,112 @@
 'use strict';
-document.addEventListener('DOMContentLoaded', function () {
-    debugger;
-    var json = {};
-    var alternativeTitles = {
-        'ПРЕДПРИЯТИЯ': 'УЧРЕЖДЕНИЯ',
-        'СРЕДСТВА МАССОВОЙ ИНФОРМАЦИИ': 'СМИ',
-        'КОММУНАЛЬНЫЕ СЛУЖБЫ': 'КОМ. СЛУЖБЫ',
-        'ФИНАНСОВЫЕ УЧРЕЖДЕНИЯ': 'ФИН. УЧРЕЖДЕНИЯ',
-    };
-    var fillFolksMenu = function (json) {
-        var i = 0, keys = [], html = [];
-        keys = Object.keys(json['ЧАСТНЫЕ ЛИЦА']);
-        for (i = 0; i < keys.length; i++) {
-            html.push('<a href="#" class="dropdown-item is-size-6 is-uppercase" data-key="' + keys[i] + '">' + (alternativeTitles[keys[i]] || keys[i]) + '</a>');
-        }
-        $('#private-folks').html(html.join('<hr class="dropdown-divider has-background-grey">'));
+
+function createItem(item) {
+    var result =
+        '<div class="f-row">' +
+        '<div class="f-title">' + item.title + '</div>' +
+        '<div class="f-right">' +
+        '<div class="f-dots">&nbsp;</div>' +
+        '<div class="f-address">' + item.address + '</div>' +
+        '</div>' +
+        '</div>';
+
+    return result;
+}
+
+var alternativeTitles = {
+    'ПРЕДПРИЯТИЯ': 'УЧРЕЖДЕНИЯ',
+    'СРЕДСТВА МАССОВОЙ ИНФОРМАЦИИ': 'СМИ',
+    'КОММУНАЛЬНЫЕ СЛУЖБЫ': 'КОМ. СЛУЖБЫ',
+    'ФИНАНСОВЫЕ УЧРЕЖДЕНИЯ': 'ФИН. УЧРЕЖДЕНИЯ',
+};
+
+function fillFolksMenu(json) {
+    var i = 0, keys = [], html = [];
+    keys = Object.keys(json['ЧАСТНЫЕ ЛИЦА']);
+    for (i = 0; i < keys.length; i++) {
+        html.push('<a href="#' + keys[i] +'" class="dropdown-item is-size-6 is-uppercase">' + (alternativeTitles[keys[i]] || keys[i]) + '</a>');
     }
-    var fillPromMenu = function (json) {
-        var keys = Object.keys(json);
-        var i, j, html = [], subMenu = [];
-        for (i = 0; i < keys.length; i++) {
-            if (keys[i] === 'ЧАСТНЫЕ ЛИЦА') {
-                continue;
-            }
-            html.push('<a href="#" class="dropdown-item is-size-6 is-uppercase" data-key="' + keys[i] + '">' + (alternativeTitles[keys[i]] || keys[i]) + '</a>');
+    $('#private-folks').html(html.join('<hr class="dropdown-divider has-background-grey">'));
+}
+
+function fillPromMenu(json) {
+    var keys = Object.keys(json);
+    var i, j, html = [], subMenu = [];
+    for (i = 0; i < keys.length; i++) {
+        if (keys[i] === 'ЧАСТНЫЕ ЛИЦА') {
+            continue;
         }
-        $('#promMenu').html(html.join('<hr class="dropdown-divider has-background-grey">'));
+        html.push('<a href="#' + keys[i] +'" class="dropdown-item is-size-6 is-uppercase" data-key="' + keys[i] + '">' + (alternativeTitles[keys[i]] || keys[i]) + '</a>');
     }
-    $.getJSON("https://cdn.sttwins.com/static/book/data_ru.json?r=0.04", function (data) {
-        json = data;
-        fillFolksMenu(json);
-        fillPromMenu(json);
-        // $('#private-folks a:first').click();
-    });
-    var scrollToAddresses = function () {
-        var windowWidth = $(window).width();
-        if (windowWidth >= 700) {
-            $([document.documentElement, document.body]).animate({
-                scrollTop: 0
-            }, 500);
-        } else if ($([document.documentElement, document.body]).scrollTop() !== $("#addresses").offset().top) {
-            $([document.documentElement, document.body]).animate({
-                scrollTop: $("#addresses").offset().top
-            }, 500);
-        }
-    }
-    $(document).on('click', '#private-folks a', function (e) {
-        if (e.preventDefault) {
-            e.preventDefault();
-        }
-        var i = 0, firstLetter = '';
-        var html = [];
-        var addresses = json['ЧАСТНЫЕ ЛИЦА'][$(e.target).data('key').trim()];
-        for (i = 0; i < addresses.length; i++) {
-            if (addresses[i].title[0] !== firstLetter) {
-                firstLetter = addresses[i].title[0]
+    $('#promMenu').html(html.join('<hr class="dropdown-divider has-background-grey">'));
+}
+
+function fillCitizens(json) {
+    var data = json['ЧАСТНЫЕ ЛИЦА'];
+    var firstLetter = '';
+    var html = [];
+
+    var keys = Object.keys(data);
+
+    keys.forEach(key => {
+        html.push('<h1 id="' + key + '">' + key + '</h1>');
+        html.push('<div class="content-block">');
+
+        for (var i = 0; i < data[key].length; i++) {
+            var dataItem = data[key][i];
+            if (dataItem.title[0] !== firstLetter) {
+                firstLetter = dataItem.title[0]
                 html.push('<h2>' + firstLetter + '</h2>');
             }
-            html.push(
-                '<div class="f-row">' +
-                '<div class="f-title">' + addresses[i].title + '</div>' +
-                '<div class="f-right">' +
-                '<div class="f-dots">&nbsp;</div>' +
-                '<div class="f-address">' + addresses[i].address + '</div>' +
-                '</div>' +
-                '</div>'
-            );
+            html.push(createItem(dataItem));
         }
-        $('#addresses').html(html.join(''));
-        $('#addresses').find(':first').css({marginTop: '0px', paddingTop: '0px'});
-        $('#private-folks a.is-active, #promMenu a.is-active').removeClass('is-active');
-        $(e.target).addClass('is-active');
-        scrollToAddresses();
-        return false
-    });
-    $(document).on('click', '#promMenu a', function (e) {
-        if (e.preventDefault) {
-            e.preventDefault();
+
+        html.push('</div>');
+    })
+
+    $('#content').html(html.join(''));
+}
+
+function fillBusiness(json) {
+    var i = 0, j = 0;
+    var html = [];
+    var groupKeys = Object.keys(json);
+
+    groupKeys.forEach(groupKey => {
+        if (groupKey === 'ЧАСТНЫЕ ЛИЦА') {
+            return;
         }
-        var i = 0, j = 0;
-        var html = [];
-        var groups = json[$(e.target).data('key').trim()];
-        var keys = Object.keys(groups);
+
+        html.push('<h1 id="' + groupKey + '">' + groupKey + '</h1>');
+        html.push('<div class="content-block">');
+
+        var group = json[groupKey];
+        var keys = Object.keys(group);
         for (i = 0; i < keys.length; i++) {
             if (keys[i] !== 'null') {
                 html.push('<h2>' + keys[i] + '</h2>');
             }
-            for (j = 0; j < groups[keys[i]].length; j++) {
-                html.push(
-                    '<div class="f-row">' +
-                    '<div class="f-title">' + groups[keys[i]][j].title + '</div>' +
-                    '<div class="f-right">' +
-                    '<div class="f-dots">&nbsp;</div>' +
-                    '<div class="f-address">' + groups[keys[i]][j].address + '</div>' +
-                    '</div>' +
-                    '</div>'
-                );
+            for (j = 0; j < group[keys[i]].length; j++) {
+                html.push(createItem(group[keys[i]][j]));
             }
         }
-        $('#addresses').html(html.join(''));
-        $('#addresses').find(':first').css({marginTop: '0px', paddingTop: '0px'});
-        $('#private-folks a.is-active, #promMenu a.is-active').removeClass('is-active');
-        $(e.target).addClass('is-active');
-        scrollToAddresses();
-        return false
+
+        html.push('</div>');
+    });
+
+    $('#content').html($('#content').html() + html.join(''));
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    var json = {};
+
+    $.getJSON("https://cdn.sttwins.com/static/book/data_ru.json?r=0.04", function (data) {
+        json = data;
+        fillFolksMenu(json);
+        fillPromMenu(json);
+
+        fillCitizens(json);
+        fillBusiness(json);
     });
 
     var topButton = document.getElementById('topButton');

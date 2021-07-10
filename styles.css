@@ -65,7 +65,6 @@ span:last-child {
     flex-wrap: wrap;
     align-items: flex-end;
     justify-content: flex-justify;
-    padding: 1em 0 0 0;
 }
 
 .f-row > .f-title {
@@ -97,12 +96,30 @@ span:last-child {
     height: 19px;
 }
 
-h2 {
+#content h1 {
     font-weight: bold;
-    font-size: 18px;
-    padding: 30px 0 0 0;
+    font-size: 20px;
+    margin-top: 10px;
+    border-bottom: 4px solid white;
+}
+
+#content h1:first-child {
+    margin-top: 0;
+}
+
+#content h2 {
+    font-weight: bold;
     margin: 0;
     border-bottom: 4px solid white;
+}
+
+#content {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.f-row {
+    break-inside: avoid;
 }
 
 a.dropdown-item, button.dropdown-item {
@@ -130,8 +147,18 @@ a.dropdown-item, button.dropdown-item {
     background-color: #555; /* Add a dark-grey background on hover */
 }
 
-@media only screen and (min-width: 700px) {
-    .addresses {
-        column-count: 2;
-    }
+.content-block {
+    column-width: 400px;
+}
+
+.content-block > * {
+    padding: 0.5em 0 0 0;
+}
+
+.container {
+    max-width: unset;
+}
+
+#menu {
+    width: 250px;
 }
