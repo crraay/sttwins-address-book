@@ -1,5 +1,6 @@
 'use strict';
 
+/// METHODS
 function createItem(item) {
     var result =
         '<div class="f-row">' +
@@ -97,39 +98,27 @@ function fillBusiness(json) {
     $('#content').html($('#content').html() + html.join(''));
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    var json = {};
+/// HANDLERS
+$(document).on('scroll', () => {
+    if ($(this).scrollTop() > 100) {
+        if ($('#topButton').is(':hidden')) {
+            $('#topButton').css({opacity : 1}).fadeIn('slow');
+        }
+    } else {
+        $('#topButton').stop(true, false).fadeOut('fast');
+    }
+});
 
-    $.getJSON("https://cdn.sttwins.com/static/book/data_ru.json?r=0.04", function (data) {
-        json = data;
+$('#topButton').on('click', () => {
+    $('html, body').stop().animate({scrollTop : 0}, 300);
+});
+
+$(document).ready(() => {
+    $.getJSON("https://cdn.sttwins.com/static/book/data_ru.json?r=0.04", function (json) {
         fillFolksMenu(json);
         fillPromMenu(json);
 
         fillCitizens(json);
         fillBusiness(json);
     });
-
-    var topButton = document.getElementById('topButton');
-
-    window.onscroll = function () {
-        scrollFunction()
-    };
-
-    function scrollFunction() {
-        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-            if (topButton.style.display !== 'block') {
-                topButton.style.display = 'block';
-            }
-        } else {
-            if (topButton.style.display !== 'none') {
-                topButton.style.display = 'none';
-            }
-        }
-    }
-
-    window.topFunction = function () {
-        $([document.documentElement, document.body]).animate({
-            scrollTop: 0
-        }, 500);
-    }
 });
