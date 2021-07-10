@@ -110,7 +110,7 @@ $(document).on('scroll', () => {
 });
 
 $('#topButton').on('click', () => {
-    $('html, body').stop().animate({scrollTop : 0}, 300);
+    $('html, body').stop().animate({scrollTop : 0}, 500);
 });
 
 $(document).ready(() => {
@@ -120,5 +120,13 @@ $(document).ready(() => {
 
         fillCitizens(json);
         fillBusiness(json);
+    });
+
+    $(document).on('click', 'a[href^="#"]', function (event) {
+        event.preventDefault();
+
+        $('html, body').animate({
+            scrollTop: $($.attr(this, 'href')).offset().top
+        }, 500);
     });
 });
