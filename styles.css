@@ -73,21 +73,11 @@ span:last-child {
     margin-right: 5px;
 }
 
-.f-row > .f-right {
-    flex: 1 0 auto;
-    padding: 0;
-    min-width: 70px;
-}
 
-.f-row > .f-right > .f-dots {
+.f-row > .f-dots {
     flex: 1 0 auto;
     background: url(data:image/gif;base64,R0lGODlhBgAGAPEAAAAAAJiYmLi4uAAAACH5BAEAAAAALAAAAAAGAAYAAAIHhI8YopxvCgA7) repeat-x left bottom 3px;
     min-width: 5px;
-}
-
-.f-row > .f-right > .f-address {
-    flex: 0 0 60px;
-    margin-left: 5px;
 }
 
 .arrow-icon {

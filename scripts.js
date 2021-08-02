@@ -5,10 +5,8 @@ function createItem(item) {
     var result =
         '<div class="f-row">' +
         '<div class="f-title">' + item.title + '</div>' +
-        '<div class="f-right">' +
         '<div class="f-dots">&nbsp;</div>' +
         '<div class="f-address">' + item.address + '</div>' +
-        '</div>' +
         '</div>';
 
     return result;
