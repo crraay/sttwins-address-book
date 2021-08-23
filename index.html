@@ -11,41 +11,34 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<section class="hero is-fullheight">
+<section class="main is-fullheight">
     <h1 class="title is-size-3 has-text-white is-uppercase has-text-weight-bold has-text-centered"
-        style="padding-top:20px; padding-bottom:10px;">Адресная книга Сейнт-Твинс</h1>
-    <section class="hero-body" style="align-items: start; padding-top: 10px;">
-        <div class="container is-widescreen has-text-white">
-                <div id="fixed-menu" class="is-narrow-mobile">
+        style="padding-top:20px; padding-bottom:10px;">
+        Адресная книга Сейнт-Твинс
+    </h1>
 
-                    <div class="st-twins-header-1 is-size-5 is-uppercase">
-                      <a href="https://cdn.sttwins.com/static/book/map.pdf" target="_blank" class="has-text-white">Карта города</a>
-                      <hr class="st-twins-line is-paddingless is-marginless">
-                    </div>
+    <div class="container is-widescreen has-text-white" style="margin:0; padding: 0 20px; align-items: start;">
+        <div id="fixed-menu" class="is-narrow-mobile">
+            <div class="st-twins-header-1 is-size-5 is-uppercase">
+                <a href="https://cdn.sttwins.com/static/book/map.pdf" target="_blank" class="has-text-white">Карта города</a>
+                <hr class="st-twins-line is-paddingless is-marginless">
+            </div>
 
-                    <div class="st-twins-header-1 is-size-5 is-uppercase">
-                        Частные лица
-                        <hr class="st-twins-line is-paddingless is-marginless">
-                    </div>
+            <div id="citizenMenu">
+                <h2 class="st-twins-header-1 is-size-5 is-uppercase">Частные лица</h2>
+                <hr class="st-twins-line is-paddingless is-marginless">
+                <div class="content"></div>
+            </div>
 
-                    <div id="private-folks">
-                    </div>
-
-                    <div class="st-twins-header-1 is-size-5 is-uppercase">
-                        Предприятия
-                        <hr class="st-twins-line is-paddingless is-marginless">
-                    </div>
-
-                    <div id="promMenu">
-                    </div>
-
-                </div>
-
-                <div id="content" style="padding-left: 300px">
-                </div>
-
+            <div id="businessMenu">
+                <h2 class="st-twins-header-1 is-size-5 is-uppercase">Предприятия</h2>
+                <hr class="st-twins-line is-paddingless is-marginless">
+                <div class="content"></div>
+            </div>
         </div>
-    </section>
+
+        <div id="content" style="margin-left: 300px"></div>
+    </div>
 </section>
 <button id="topButton">Наверх</button>
 

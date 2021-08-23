@@ -3,11 +3,11 @@
 /// METHODS
 function createItem(item) {
     var result =
-        '<div class="f-row">' +
-        '<div class="f-title">' + item.title + '</div>' +
-        '<div class="f-dots">&nbsp;</div>' +
-        '<div class="f-address">' + item.address + '</div>' +
-        '</div>';
+        `<div class="f-row">
+            <div class="f-title">${item.title}</div>
+            <div class="f-dots">&nbsp;</div>
+            <div class="f-address">${item.address}</div>
+        </div>`;
 
     return result;
 }
@@ -24,15 +24,15 @@ function fillFolksMenu(json) {
     keys = Object.keys(json['ЧАСТНЫЕ ЛИЦА']);
     for (i = 0; i < keys.length; i++) {
         html.push(
-          '<a data-key="' + $.escapeSelector(keys[i]) +'" class="dropdown-item is-size-6 is-uppercase">' + (alternativeTitles[keys[i]] || keys[i]) + '</a>'
-          // `<a
-          //   data-key="${$.escapeSelector(keys[i])}"
-          //   class="dropdown-item is-size-6 is-uppercase">
-          //   ${(alternativeTitles[keys[i]] || keys[i])}
-          // </a>`
+          // '<a data-key="' + $.escapeSelector(keys[i]) +'" class="dropdown-item is-size-6 is-uppercase">' + (alternativeTitles[keys[i]] || keys[i]) + '</a>'
+          `<a
+            data-key="${$.escapeSelector(keys[i])}"
+            class="dropdown-item is-size-6 is-uppercase">
+            ${(alternativeTitles[keys[i]] || keys[i])}
+          </a>`
         );
     }
-    $('#private-folks').html(html.join('<hr class="dropdown-divider has-background-grey">'));
+    $('#citizenMenu .content').html(html.join('<hr class="dropdown-divider has-background-grey">'));
 }
 
 function fillPromMenu(json) {
@@ -42,9 +42,14 @@ function fillPromMenu(json) {
         if (keys[i] === 'ЧАСТНЫЕ ЛИЦА') {
             continue;
         }
-        html.push('<a data-key="' + $.escapeSelector(keys[i]) +'" class="dropdown-item is-size-6 is-uppercase">' + (alternativeTitles[keys[i]] || keys[i]) + '</a>');
+        html.push(
+          `<a data-key="${$.escapeSelector(keys[i])}"
+            class="dropdown-item is-size-6 is-uppercase">
+            ${(alternativeTitles[keys[i]] || keys[i])}
+          </a>`
+        );
     }
-    $('#promMenu').html(html.join('<hr class="dropdown-divider has-background-grey">'));
+    $('#businessMenu .content').html(html.join('<hr class="dropdown-divider has-background-grey">'));
 }
 
 function fillCitizens(json) {
