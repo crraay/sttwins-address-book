@@ -23,7 +23,14 @@ function fillFolksMenu(json) {
     var i = 0, keys = [], html = [];
     keys = Object.keys(json['ЧАСТНЫЕ ЛИЦА']);
     for (i = 0; i < keys.length; i++) {
-        html.push('<a href="#' + keys[i] +'" class="dropdown-item is-size-6 is-uppercase">' + (alternativeTitles[keys[i]] || keys[i]) + '</a>');
+        html.push(
+          '<a data-key="' + $.escapeSelector(keys[i]) +'" class="dropdown-item is-size-6 is-uppercase">' + (alternativeTitles[keys[i]] || keys[i]) + '</a>'
+          // `<a
+          //   data-key="${$.escapeSelector(keys[i])}"
+          //   class="dropdown-item is-size-6 is-uppercase">
+          //   ${(alternativeTitles[keys[i]] || keys[i])}
+          // </a>`
+        );
     }
     $('#private-folks').html(html.join('<hr class="dropdown-divider has-background-grey">'));
 }
@@ -35,7 +42,7 @@ function fillPromMenu(json) {
         if (keys[i] === 'ЧАСТНЫЕ ЛИЦА') {
             continue;
         }
-        html.push('<a href="#' + keys[i] +'" class="dropdown-item is-size-6 is-uppercase" data-key="' + keys[i] + '">' + (alternativeTitles[keys[i]] || keys[i]) + '</a>');
+        html.push('<a data-key="' + $.escapeSelector(keys[i]) +'" class="dropdown-item is-size-6 is-uppercase">' + (alternativeTitles[keys[i]] || keys[i]) + '</a>');
     }
     $('#promMenu').html(html.join('<hr class="dropdown-divider has-background-grey">'));
 }
@@ -76,7 +83,7 @@ function fillBusiness(json) {
             return;
         }
 
-        html.push('<h1 id="' + groupKey + '">' + groupKey + '</h1>');
+        html.push('<h1 id="' + $.escapeSelector(groupKey) + '">' + groupKey + '</h1>');
         html.push('<div class="content-block">');
 
         var group = json[groupKey];
@@ -97,7 +104,7 @@ function fillBusiness(json) {
 }
 
 /// HANDLERS
-$(document).on('scroll', () => {
+$(document).on('scroll', event => {
     if ($(this).scrollTop() > 100) {
         if ($('#topButton').is(':hidden')) {
             $('#topButton').css({opacity : 1}).fadeIn('slow');
@@ -105,6 +112,13 @@ $(document).on('scroll', () => {
     } else {
         $('#topButton').stop(true, false).fadeOut('fast');
     }
+
+    var scrollTop = $(document).scrollTop();
+    var fixedTop = 100;
+
+    var diff = fixedTop - scrollTop;
+    var menu = $('#fixed-menu');
+    menu.css({top: `${diff > 0 ? diff : 0}px`});
 });
 
 $('#topButton').on('click', () => {
@@ -120,11 +134,12 @@ $(document).ready(() => {
         fillBusiness(json);
     });
 
-    $(document).on('click', 'a[href^="#"]', function (event) {
+    $(document).on('click', 'a[data-key]', function (event) {
         event.preventDefault();
 
+        const id = $.attr(this, 'data-key');
         $('html, body').animate({
-            scrollTop: $($.attr(this, 'href')).offset().top
+            scrollTop: $('#' + $.escapeSelector(id)).offset().top
         }, 500);
     });
 });

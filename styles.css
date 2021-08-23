@@ -150,6 +150,18 @@ a.dropdown-item, button.dropdown-item {
     max-width: unset;
 }
 
-#menu {
+#fixed-menu {
     width: 250px;
+
+    top: 100px;
+    bottom:0;
+    position:fixed;
+    overflow-y:scroll;
+    overflow-x:hidden;
+}
+
+/* remove scrollbar view */
+::-webkit-scrollbar {
+    width: 0;
+    background: transparent;
 }
