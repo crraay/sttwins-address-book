@@ -24,7 +24,6 @@ function fillFolksMenu(json) {
     keys = Object.keys(json['ЧАСТНЫЕ ЛИЦА']);
     for (i = 0; i < keys.length; i++) {
         html.push(
-          // '<a data-key="' + $.escapeSelector(keys[i]) +'" class="dropdown-item is-size-6 is-uppercase">' + (alternativeTitles[keys[i]] || keys[i]) + '</a>'
           `<a
             data-key="${$.escapeSelector(keys[i])}"
             class="dropdown-item is-size-6 is-uppercase">
@@ -119,7 +118,7 @@ $(document).on('scroll', event => {
     }
 
     var scrollTop = $(document).scrollTop();
-    var fixedTop = 100;
+    var fixedTop = 90;
 
     var diff = fixedTop - scrollTop;
     var menu = $('#fixed-menu');
