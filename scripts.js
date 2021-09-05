@@ -1,7 +1,7 @@
 'use strict';
 
 /// METHODS
-function createItem(item) {
+function createAddressItem(item) {
     var result =
         `<div class="f-row">
             <div class="f-title">${item.title}</div>
@@ -12,99 +12,89 @@ function createItem(item) {
     return result;
 }
 
-var alternativeTitles = {
-    'ПРЕДПРИЯТИЯ': 'УЧРЕЖДЕНИЯ',
-    'СРЕДСТВА МАССОВОЙ ИНФОРМАЦИИ': 'СМИ',
-    'КОММУНАЛЬНЫЕ СЛУЖБЫ': 'КОМ. СЛУЖБЫ',
-    'ФИНАНСОВЫЕ УЧРЕЖДЕНИЯ': 'ФИН. УЧРЕЖДЕНИЯ',
-};
-
-function fillFolksMenu(json) {
-    var i = 0, keys = [], html = [];
-    keys = Object.keys(json['ЧАСТНЫЕ ЛИЦА']);
-    for (i = 0; i < keys.length; i++) {
-        html.push(
-          `<a
-            data-key="${$.escapeSelector(keys[i])}"
-            class="dropdown-item is-size-6 is-uppercase">
-            ${(alternativeTitles[keys[i]] || keys[i])}
-          </a>`
-        );
-    }
-    $('#citizenMenu .content').html(html.join('<hr class="dropdown-divider has-background-grey">'));
-}
-
-function fillPromMenu(json) {
-    var keys = Object.keys(json);
-    var i, j, html = [], subMenu = [];
-    for (i = 0; i < keys.length; i++) {
-        if (keys[i] === 'ЧАСТНЫЕ ЛИЦА') {
-            continue;
-        }
-        html.push(
-          `<a data-key="${$.escapeSelector(keys[i])}"
-            class="dropdown-item is-size-6 is-uppercase">
-            ${(alternativeTitles[keys[i]] || keys[i])}
-          </a>`
-        );
-    }
-    $('#businessMenu .content').html(html.join('<hr class="dropdown-divider has-background-grey">'));
-}
-
-function fillCitizens(json) {
-    var data = json['ЧАСТНЫЕ ЛИЦА'];
+function createAddressesContent(data, groupByFirstLetter = false) {
     var firstLetter = '';
-    var html = [];
+    var result = [];
+    var item;
 
+    for (var i = 0; i < data.length; i++) {
+        item = data[i];
+
+        if (groupByFirstLetter && (item.title[0] !== firstLetter)) {
+            firstLetter = item.title[0]
+            result.push('<h2>' + firstLetter + '</h2>');
+        }
+
+        result.push(createAddressItem(item));
+    }
+
+    return result;
+}
+
+function createAddressesHeader(title) {
+    return '<h1 id="' + $.escapeSelector(title) + '">' + title + '</h1>';
+}
+
+function createSubmenu(data) {
+    var alternativeTitles = {
+        'ПРЕДПРИЯТИЯ': 'УЧРЕЖДЕНИЯ',
+        'СРЕДСТВА МАССОВОЙ ИНФОРМАЦИИ': 'СМИ',
+        'КОММУНАЛЬНЫЕ СЛУЖБЫ': 'КОМ. СЛУЖБЫ',
+        'ФИНАНСОВЫЕ УЧРЕЖДЕНИЯ': 'ФИН. УЧРЕЖДЕНИЯ',
+    };
+
+    var keys = Object.keys(data);
+    var result = [];
+
+    for (var i = 0; i < keys.length; i++) {
+        result.push(
+            `<a
+                data-key="${$.escapeSelector(keys[i])}"
+                class="dropdown-item is-size-6 is-uppercase">
+                ${(alternativeTitles[keys[i]] || keys[i])}
+            </a>`
+        );
+    }
+
+    return result.join('<hr class="dropdown-divider has-background-grey">');
+}
+
+function createCitizens(data) {
+    var result = [];
     var keys = Object.keys(data);
 
     keys.forEach(key => {
-        html.push('<h1 id="' + key + '">' + key + '</h1>');
-        html.push('<div class="content-block">');
+        result.push(createAddressesHeader(key));
+        result.push('<div class="content-block">');
 
-        for (var i = 0; i < data[key].length; i++) {
-            var dataItem = data[key][i];
-            if (dataItem.title[0] !== firstLetter) {
-                firstLetter = dataItem.title[0]
-                html.push('<h2>' + firstLetter + '</h2>');
-            }
-            html.push(createItem(dataItem));
-        }
+        result = result.concat(createAddressesContent(data[key], true));
 
-        html.push('</div>');
+        result.push('</div>');
     })
 
-    $('#content').html(html.join(''));
+    return result.join('');
 }
 
-function fillBusiness(json) {
-    var i = 0, j = 0;
-    var html = [];
-    var groupKeys = Object.keys(json);
+function createBusiness(data) {
+    var result = [];
+    var groupKeys = Object.keys(data);
 
     groupKeys.forEach(groupKey => {
-        if (groupKey === 'ЧАСТНЫЕ ЛИЦА') {
-            return;
-        }
+        result.push(createAddressesHeader(groupKey));
+        result.push('<div class="content-block">');
 
-        html.push('<h1 id="' + $.escapeSelector(groupKey) + '">' + groupKey + '</h1>');
-        html.push('<div class="content-block">');
-
-        var group = json[groupKey];
+        var group = data[groupKey];
         var keys = Object.keys(group);
-        for (i = 0; i < keys.length; i++) {
-            if (keys[i] !== 'null') {
-                html.push('<h2>' + keys[i] + '</h2>');
-            }
-            for (j = 0; j < group[keys[i]].length; j++) {
-                html.push(createItem(group[keys[i]][j]));
-            }
+        for (var i = 0; i < keys.length; i++) {
+            result.push('<h2>' + keys[i] + '</h2>');
+
+            result = result.concat(createAddressesContent(group[keys[i]]));
         }
 
-        html.push('</div>');
+        result.push('</div>');
     });
 
-    $('#content').html($('#content').html() + html.join(''));
+    return result.join('');
 }
 
 /// HANDLERS
@@ -131,11 +121,13 @@ $('#topButton').on('click', () => {
 
 $(document).ready(() => {
     $.getJSON("https://cdn.sttwins.com/static/book/data_ru.json?r=0.04", function (json) {
-        fillFolksMenu(json);
-        fillPromMenu(json);
+        var citizens = json['ЧАСТНЫЕ ЛИЦА'];
+        delete json['ЧАСТНЫЕ ЛИЦА'];
 
-        fillCitizens(json);
-        fillBusiness(json);
+        $('#citizenMenu .content').html(createSubmenu(citizens))
+        $('#businessMenu .content').html(createSubmenu(json))
+
+        $('#content').html(createCitizens(citizens) + createBusiness(json));
     });
 
     $(document).on('click', 'a[data-key]', function (event) {
