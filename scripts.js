@@ -2,14 +2,11 @@
 
 /// METHODS
 function createAddressItem(item) {
-    var result =
-        `<div class="f-row">
-            <div class="f-title">${item.title}</div>
-            <div class="f-dots">&nbsp;</div>
-            <div class="f-address">${item.address}</div>
-        </div>`;
-
-    return result;
+    return `<div class="f-row">
+                <div class="f-title">${item.title}</div>
+                <div class="f-dots">&nbsp;</div>
+                <div class="f-address">${item.address}</div>
+            </div>`;
 }
 
 function createAddressesContent(data, groupByFirstLetter = false) {
@@ -128,14 +125,14 @@ $(document).ready(() => {
         $('#businessMenu .content').html(createSubmenu(json))
 
         $('#content').html(createCitizens(citizens) + createBusiness(json));
-    });
 
-    $(document).on('click', 'a[data-key]', function (event) {
-        event.preventDefault();
+        $(document).on('click', 'a[data-key]', function (event) {
+            event.preventDefault();
 
-        const id = $.attr(this, 'data-key');
-        $('html, body').animate({
-            scrollTop: $('#' + $.escapeSelector(id)).offset().top
-        }, 500);
+            const id = $.attr(this, 'data-key');
+            $('html, body').animate({
+                scrollTop: $('#' + $.escapeSelector(id)).offset().top
+            }, 500);
+        });
     });
 });
